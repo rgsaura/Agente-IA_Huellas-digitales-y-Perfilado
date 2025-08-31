@@ -1,0 +1,920 @@
+{
+  "name": "FaceCheck.ID - API",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "image_path"
+            },
+            {
+              "name": "search_id",
+              "type": "number"
+            }
+          ]
+        }
+      },
+      "id": "7f2ef82d-e0a0-4e2c-a42a-be58bdccfbac",
+      "name": "Trigger - Recibir Imagen",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -752,
+        32
+      ],
+      "typeVersion": 1.1,
+      "notes": "Punto de entrada del workflow. Recibe:\n- image_path: Ruta de la imagen a analizar\n- search_id: ID único para la búsqueda en FaceCheck.ID"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $json.image_path }}",
+        "options": {}
+      },
+      "id": "f6a0b01e-7f90-476e-a152-d94deded0827",
+      "name": "Leer Imagen del Disco",
+      "type": "n8n-nodes-base.readWriteFile",
+      "position": [
+        -560,
+        32
+      ],
+      "typeVersion": 1,
+      "alwaysOutputData": false,
+      "notes": "Lee el archivo de imagen desde el sistema de archivos utilizando la ruta proporcionada en el trigger."
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "9791f60e-fca5-4331-a04c-529bfe1448e8",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": 100,
+                    "operator": {
+                      "type": "object",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "e222b12c-8e63-43fa-94c5-3077bc9dba5b",
+                    "leftValue": "={{ $json.output }}",
+                    "rightValue": 100,
+                    "operator": {
+                      "type": "object",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b5de315a-a57c-4535-ad2c-fbfe4ff560cb",
+      "name": "Verificar Resultados",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -16,
+        32
+      ],
+      "typeVersion": 3.2,
+      "notes": "Evalúa si la búsqueda devolvió resultados:\n- Si hay output: procesa los resultados\n- Si no hay output: espera 3 segundos y reintenta"
+    },
+    {
+      "parameters": {
+        "amount": 6
+      },
+      "id": "dc4573b8-645c-4f92-ad04-1e266a48e172",
+      "name": "Esperar Reintento",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        208,
+        48
+      ],
+      "typeVersion": 1.1,
+      "webhookId": "89309848-f4d2-4a0a-b76e-ae694c409b27",
+      "notes": "Pausa de 3 segundos antes de reintentar la búsqueda. Permite que el procesamiento en FaceCheck.ID se complete."
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.items",
+        "options": {}
+      },
+      "id": "9c93ed10-cd70-4276-b86e-c1ed844c342c",
+      "name": "Separar Resultados",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        -752,
+        240
+      ],
+      "typeVersion": 1,
+      "notes": "Divide el array de resultados (output.items) en elementos individuales para procesamiento posterior."
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5ee754df-27ee-4d09-8a7c-415bc007db69",
+              "leftValue": "={{ $json.score }}",
+              "rightValue": 65,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "305cb1b0-d7bc-4754-bd04-379adf871c3f",
+      "name": "Filtrar por Confianza",
+      "type": "n8n-nodes-base.filter",
+      "position": [
+        -576,
+        240
+      ],
+      "typeVersion": 2.2,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput",
+      "notes": "Filtra resultados manteniendo solo aquellos con puntuación de confianza > 60%. Elimina coincidencias de baja calidad."
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "3446116e-9acd-4aeb-9f7c-1764a3d1c64c"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "912b6278-7912-4deb-8fe5-25f5bf7fce1c",
+                    "leftValue": "={{ $json }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "661d0231-011f-4e44-b942-85eb14cc7582",
+      "name": "Validar Datos Filtrados",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -208,
+        240
+      ],
+      "typeVersion": 3.2,
+      "notes": "Verifica si quedaron resultados después del filtrado:\n- Con datos: sube imágenes a ImgBB\n- Sin datos: devuelve mensaje 'No images found'"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "expiration",
+              "value": "10000"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image",
+              "value": "={{ $json.base64.split(',')[1].trim() }}"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 500
+            }
+          },
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "2047a198-6ef9-452f-aaaa-4ccc1792b477",
+      "name": "Subir a ImgBB",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        0,
+        208
+      ],
+      "typeVersion": 4.2,
+      "retryOnFail": true,
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "w0Iiw1EKQfxUSI06",
+          "name": "imgBB"
+        }
+      },
+      "notes": "Sube las imágenes encontradas al servicio ImgBB para generar URLs públicas. Configurado con expiración de 10 minutos."
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "image",
+        "include": "specifiedFields",
+        "fieldsToInclude": "url, score, display_url",
+        "options": {}
+      },
+      "id": "7d006bf9-1d1d-4eac-97d2-c34f4cc6588f",
+      "name": "Consolidar URLs",
+      "type": "n8n-nodes-base.aggregate",
+      "position": [
+        592,
+        256
+      ],
+      "typeVersion": 1,
+      "notes": "Agrupa todas las URLs de las imágenes encontradas en un array llamado 'images_found' como resultado final."
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2a7e2325-eb0d-457f-9484-64952d5c84fd",
+              "name": "output",
+              "value": "No images found",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "070df531-c4a8-4df7-a8eb-68aaa8d195c2",
+      "name": "Mensaje Sin Resultados",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        160,
+        432
+      ],
+      "typeVersion": 3.4,
+      "notes": "Genera mensaje de salida cuando no se encuentran imágenes que cumplan el criterio de confianza mínima."
+    },
+    {
+      "parameters": {
+        "content": "## FaceCheck.ID - API\n**Implementación para el uso de la herramienta en N8N**",
+        "height": 96,
+        "width": 464,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        448
+      ],
+      "id": "c594c2de-4067-4956-a366-a338cfbdc4a7",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        800,
+        320
+      ],
+      "id": "f5f52fe4-d606-4976-9696-c3d903e2e901",
+      "name": "Final"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://facecheck.id/api/upload_pic",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "id_search",
+              "value": "={{ $('Trigger - Recibir Imagen').item.json.search_id }}"
+            },
+            {
+              "name": "reset_prev_images",
+              "value": "true"
+            },
+            {
+              "parameterType": "formBinaryData",
+              "name": "images",
+              "inputDataFieldName": "=data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cc8ce66e-cca1-4ffa-8fdc-8b31c189d92f",
+      "name": "Subida de Imagen",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -384,
+        32
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "xyWX1X4txPPp4jvW",
+          "name": "MCP Bearer Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "aNHbVeBeffMSlolY",
+          "name": "facecheck.id"
+        }
+      },
+      "notes": "Sube la imagen al servicio FaceCheck.ID para preparar la búsqueda facial. Utiliza el search_id recibido y marca reset_prev_images=true."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://facecheck.id/api/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"id_search\": \"{{ $('Trigger - Recibir Imagen').item.json.search_id }}\",\n  \"with_progress\": true,\n  \"id_captcha\": null,\n  \"status_only\": false,\n  \"demo\": false,\n  \"shady_only\": false\n}\n",
+        "options": {}
+      },
+      "id": "b8621bda-a6a4-4e9b-8dcd-056ece8a7485",
+      "name": "Búsqueda Facial",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -208,
+        32
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aNHbVeBeffMSlolY",
+          "name": "facecheck.id"
+        }
+      },
+      "notes": "Inicia la búsqueda facial en FaceCheck.ID usando el search_id. Configurado para mostrar progreso y buscar contenido completo."
+    },
+    {
+      "parameters": {
+        "maxItems": 10
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -368,
+        240
+      ],
+      "id": "0b6f75a5-f75a-43a6-9889-f3665875f4b3",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "command": "ls images"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -2160,
+        224
+      ],
+      "id": "c29f8a2f-dfe5-467f-8f44-8ebf687db561",
+      "name": "Execute Command"
+    },
+    {
+      "parameters": {
+        "content": "### Troubleshoot\n\n",
+        "height": 320,
+        "width": 448,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2048,
+        144
+      ],
+      "id": "bbf3aa13-a691-4e2b-8235-fa07fb85ca6a",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.imgbb.com/1/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "expiration",
+              "value": "10000"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image",
+              "value": "={{ $json.base64.split(',')[1].trim() }}"
+            }
+          ]
+        },
+        "options": {
+          "batching": {
+            "batch": {
+              "batchSize": 1,
+              "batchInterval": 500
+            }
+          },
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "b4d4c5ad-c5a7-4f08-9427-6d1dc15bdbf1",
+      "name": "Subir a ImgBB1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -1696,
+        352
+      ],
+      "typeVersion": 4.2,
+      "retryOnFail": true,
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "w0Iiw1EKQfxUSI06",
+          "name": "imgBB"
+        }
+      },
+      "notes": "Sube las imágenes encontradas al servicio ImgBB para generar URLs públicas. Configurado con expiración de 10 minutos."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://facecheck.id/api/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"id_search\": \"123456\",\n  \"with_progress\": true,\n  \"id_captcha\": null,\n  \"status_only\": false,\n  \"demo\": false,\n  \"shady_only\": false\n}\n",
+        "options": {}
+      },
+      "id": "07fa554e-5141-4fd8-8074-7ed35c63f885",
+      "name": "Búsqueda Facial1",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -2176,
+        352
+      ],
+      "typeVersion": 4.2,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "aNHbVeBeffMSlolY",
+          "name": "facecheck.id"
+        }
+      },
+      "notes": "Inicia la búsqueda facial en FaceCheck.ID usando el search_id. Configurado para mostrar progreso y buscar contenido completo."
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output.items",
+        "options": {}
+      },
+      "id": "bd83a394-37cb-44ca-9449-bd50af29b9ff",
+      "name": "Separar Resultados1",
+      "type": "n8n-nodes-base.splitOut",
+      "position": [
+        -2016,
+        352
+      ],
+      "typeVersion": 1,
+      "notes": "Divide el array de resultados (output.items) en elementos individuales para procesamiento posterior."
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -1856,
+        352
+      ],
+      "id": "22e84405-3457-471e-991f-f851c97d4dcb",
+      "name": "Limit1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -2416,
+        352
+      ],
+      "id": "c1bb235f-3a7d-4282-b9cc-71b8117fc646",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        416,
+        256
+      ],
+      "id": "7ad730f3-54ad-44d5-bcde-f46c74d81354",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7c9f6b1b-b89b-4c7f-a67a-1cacef9b93f2",
+              "name": "display_url",
+              "value": "={{ $json.data.display_url }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        208
+      ],
+      "id": "d5a45754-2d6b-459e-8d34-f86f4615cae8",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "image_path": "image_0.png",
+          "search_id": 1532193
+        }
+      }
+    ],
+    "Trigger - Recibir Imagen": [
+      {
+        "json": {
+          "image_path": "photos/file_8.jpg",
+          "search_id": 123456
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Subir a ImgBB": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar Reintento": {
+      "main": [
+        [
+          {
+            "node": "Búsqueda Facial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separar Resultados": {
+      "main": [
+        [
+          {
+            "node": "Filtrar por Confianza",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Resultados": {
+      "main": [
+        [
+          {
+            "node": "Separar Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Esperar Reintento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar por Confianza": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Leer Imagen del Disco": {
+      "main": [
+        [
+          {
+            "node": "Subida de Imagen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Datos Filtrados": {
+      "main": [
+        [
+          {
+            "node": "Subir a ImgBB",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Mensaje Sin Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger - Recibir Imagen": {
+      "main": [
+        [
+          {
+            "node": "Leer Imagen del Disco",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar URLs": {
+      "main": [
+        [
+          {
+            "node": "Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensaje Sin Resultados": {
+      "main": [
+        [
+          {
+            "node": "Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Subida de Imagen": {
+      "main": [
+        [
+          {
+            "node": "Búsqueda Facial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Búsqueda Facial": {
+      "main": [
+        [
+          {
+            "node": "Verificar Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Validar Datos Filtrados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Búsqueda Facial1": {
+      "main": [
+        [
+          {
+            "node": "Separar Resultados1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separar Resultados1": {
+      "main": [
+        [
+          {
+            "node": "Limit1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit1": {
+      "main": [
+        [
+          {
+            "node": "Subir a ImgBB1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Búsqueda Facial1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Consolidar URLs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7914a49c-76be-411f-a8ad-9c585a834059",
+  "meta": {
+    "instanceId": "5ff63cb629e7639326592673fe1b7ea80495e615385e510e0b5160f31591b837"
+  },
+  "id": "A4sImK7YFnx4XLHi",
+  "tags": []
+}

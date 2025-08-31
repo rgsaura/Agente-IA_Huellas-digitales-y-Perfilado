@@ -1,0 +1,3864 @@
+{
+  "name": "Digital Footprint & Profile Investigator",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "5b47e65a-ce26-4bfc-8e4b-bc90f10d30f5",
+      "name": "MCP kali linux",
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        -1856,
+        -192
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-3.5-turbo",
+        "options": {}
+      },
+      "id": "c4a02b6b-d152-4014-ad80-5faa4feafa17",
+      "name": "OpenRouter Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1472,
+        -192
+      ],
+      "credentials": {
+        "openRouterApi": {
+          "id": "vKLJonvNzm6114Sc",
+          "name": "rgsaura - OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Retrieves WhatsApp profile information, associated social media accounts (Telegram, Google) and metadata for a given phone number using RapidAPI WhatsApp Data service.",
+        "url": "=https://whatsapp-data1.p.rapidapi.com/number/{{ $fromAI(\"number\") }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "base64",
+              "value": "false"
+            },
+            {
+              "name": "telegram",
+              "value": "true"
+            },
+            {
+              "name": "google",
+              "value": "true"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-rapidapi-host",
+              "value": "whatsapp-data1.p.rapidapi.com"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4159039c-31f6-421c-bf07-38329f864e06",
+      "name": "Whatsapp Data rapidapi",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -1728,
+        -192
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "s6JBPzGHSkoF6cTr",
+          "name": "whatsapp rapidapi"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Searches the Breach Directory database for compromised credentials and data breaches associated with phones, emails, usernames, or other identifiers using RapidAPI.",
+        "url": "https://breachdirectory.p.rapidapi.com",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "func",
+              "value": "auto"
+            },
+            {
+              "name": "term",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-rapidapi-host",
+              "value": "breachdirectory.p.rapidapi.com"
+            },
+            {
+              "name": "x-rapidapi-key",
+              "value": "266a445f5emsh3c736b44d8d01f9p116482jsnc8891fe6dbe8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "58dd17f0-0868-479a-b9ec-5417764934f7",
+      "name": "breachdirectory",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -1968,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Comprehensive OSINT search tool that performs multi-source intelligence gathering on phones, emails, names and other identifiers across various databases and public sources.",
+        "method": "POST",
+        "url": "https://osint-phone-email-names-search-everything.p.rapidapi.com/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-rapidapi-host",
+              "value": "osint-phone-email-names-search-everything.p.rapidapi.com"
+            },
+            {
+              "name": "x-rapidapi-key",
+              "value": "266a445f5emsh3c736b44d8d01f9p116482jsnc8891fe6dbe8"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "request",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters0_Value', ``, 'string') }}"
+            },
+            {
+              "name": "lang",
+              "value": "en"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9b3fc163-13a2-4489-bb76-969964ec7942",
+      "name": "osint-world",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -1840,
+        16
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "toolDescription": "Performs reverse facial recognition search using uploaded images to find matching faces across social media platforms and public databases via FaceSearchAI API.",
+        "method": "POST",
+        "url": "https://facesearchai.com/api/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "api-key",
+              "value": "your_api_key_here"
+            },
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "={{ $('ENTRADA (INPUT)').item.json.binary.image_0.data }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d15fb0e9-4f73-4e3d-b446-0a95d7324eec",
+      "name": "facesearchai.com",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -1344,
+        16
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "messages": {
+          "message": [
+            {
+              "content": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('message0_Text', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {},
+        "requestOptions": {}
+      },
+      "id": "b555ec38-cf55-4fd9-bd7f-0acd1742542a",
+      "name": "Perplexity",
+      "type": "n8n-nodes-base.perplexityTool",
+      "typeVersion": 1,
+      "position": [
+        -2272,
+        -192
+      ],
+      "credentials": {
+        "perplexityApi": {
+          "id": "r1UfvJ2XKTtKmsvO",
+          "name": "rgsaura - Perplexity account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        -1328,
+        -192
+      ],
+      "id": "df8fb7d6-eaf5-4d86-87fe-a4fbcfa23c3b",
+      "name": "Think",
+      "notesInFlow": false
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "osint",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -4336,
+        -496
+      ],
+      "id": "2d8dee71-a088-40e9-ba08-2559469a6210",
+      "name": "Webhook",
+      "webhookId": "b3e7d885-0c39-4425-a239-ae065759dbb5"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        64,
+        -816
+      ],
+      "id": "42a6bc26-ec0f-4a07-9065-1c69893e0b9a",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -3440,
+        -80
+      ],
+      "id": "ca696aed-33fe-4084-837c-88201f7b9782",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('ENTRADA (INPUT)').item.json.chat_id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1776,
+        -528
+      ],
+      "id": "f37e8ca5-d9f0-4ad0-b60c-00b91aedbf8c",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "content": "## HERRAMIENTAS\n",
+        "height": 512,
+        "width": 1184,
+        "color": 4
+      },
+      "id": "44f849e1-8022-4307-9b9e-9cefa6fa51c0",
+      "name": "Sticky Note3",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2784,
+        -272
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "16cab8e5-4995-4e4c-af41-55463c349a7a",
+              "name": "chat_id",
+              "value": "={{ $json.chat_id }}",
+              "type": "string"
+            },
+            {
+              "id": "c81f2668-604e-467e-b7f4-a2f50033867b",
+              "name": "chatInput",
+              "value": "={{ $json.query }}",
+              "type": "string"
+            },
+            {
+              "id": "a45a2ee8-81fa-4b40-9a06-75bcc10dc28c",
+              "name": "source",
+              "value": "workflow",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3264,
+        -80
+      ],
+      "id": "6be5eef0-61f5-4740-9f49-c0afc3c46c6b",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        64,
+        -976
+      ],
+      "id": "db9d11c4-1f07-4256-8b61-562998e77d20",
+      "name": "No Operation, do nothing",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## Validador y Optimizador",
+        "height": 416,
+        "width": 1392,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1456,
+        -368
+      ],
+      "id": "10501fb9-986b-4935-84d0-b198947f3346",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## ENTRADA (INPUT) - Telegram",
+        "height": 864,
+        "width": 1440,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4416,
+        -1664
+      ],
+      "id": "8969a601-a556-471c-85f6-43edc5b89760",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## SALIDA (OUTPUT)",
+        "height": 544,
+        "width": 1280,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1328,
+        -1008
+      ],
+      "id": "1932e4bb-16d2-4478-8f01-903b38a4e8a5",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreZep",
+      "typeVersion": 1.3,
+      "position": [
+        -1616,
+        -672
+      ],
+      "id": "acaf239e-03cd-4bef-b220-22e7cb46b2a0",
+      "name": "Zep Vector Store",
+      "credentials": {
+        "zepApi": {
+          "id": "7pdcqQ3hnHUu0zRJ",
+          "name": "rgsaura - Zep Api Cloud account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "127e3578-497a-47f4-8837-bfdf7abc9d7e",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -4352,
+        -1104
+      ],
+      "webhookId": "99eab1a0-569d-4f0f-a49e-578a02abfe63",
+      "credentials": {
+        "telegramApi": {
+          "id": "dloPE4eyiVNVW2ZJ",
+          "name": "rgsaura - Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fe7ecc99-e1e8-4a5e-bdd6-6fce9757b234",
+              "name": "text",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "12d9a154-d197-46de-a914-c19ac3434131",
+      "name": "Set 'Text'",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3584,
+        -1440
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "id": "8e7db016-fcf2-441f-918e-af198f3192fb",
+      "name": "Download Voice File",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -3952,
+        -1168
+      ],
+      "webhookId": "c0b376b1-7b63-41b6-8063-0b3096b8333d",
+      "credentials": {
+        "telegramApi": {
+          "id": "dloPE4eyiVNVW2ZJ",
+          "name": "rgsaura - Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "id": "402e8911-e6aa-4bc0-93d5-24a931d6afb6",
+      "name": "Transcribe Audio",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.6,
+      "position": [
+        -3760,
+        -1296
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "6tinaV7utfDfCxA9",
+          "name": "rgsaura - OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.photo[0].file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -3952,
+        -1024
+      ],
+      "id": "26ab00b4-e8ec-40b7-9bc6-964192e953f1",
+      "name": "Get image",
+      "webhookId": "85750752-8e0d-4d21-a733-a84a4967ea1e",
+      "credentials": {
+        "telegramApi": {
+          "id": "dloPE4eyiVNVW2ZJ",
+          "name": "rgsaura - Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to get a Digital Footprint Investigation on some digital data (phone number, email, username...)",
+        "workflowId": {
+          "__rl": true,
+          "value": "fIVoF74uCkbqLe7q",
+          "mode": "list",
+          "cachedResultName": "OSINT Digital Footprint & Profile Investigator"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('query', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -3696,
+        96
+      ],
+      "id": "ce16bec1-5bc6-42d1-a8fd-56f4f63dccb7",
+      "name": "Digital Footprint Investigation"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -3440,
+        96
+      ],
+      "id": "6c1ce43f-9b4d-4605-ad9d-384532b24f2f",
+      "name": "When chat message received",
+      "webhookId": "0cf95d8b-059c-4029-a833-b3e92325331c"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "db29e9e3-1f88-4a03-90b0-651587071385",
+              "name": "chat_id",
+              "value": "={{ $json.sessionId }}",
+              "type": "string"
+            },
+            {
+              "id": "fa77e6f9-cf73-4574-8e1c-08955a346404",
+              "name": "chatInput",
+              "value": "={{ $json.chatInput }}",
+              "type": "string"
+            },
+            {
+              "id": "a2d5f567-e192-4894-94ca-3c3a55980f5f",
+              "name": "systemPrompt",
+              "value": "workflow",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3264,
+        80
+      ],
+      "id": "9c4f792f-9e24-4c66-b513-785061baaca5",
+      "name": "chat id5",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "bearerAuth",
+        "path": "2b83c65c-15f4-49bd-9ed7-8aa716b706e0"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        -3760,
+        -64
+      ],
+      "id": "f3c27883-de91-4987-a83f-a374371f1a1f",
+      "name": "OSINT MCP Server",
+      "webhookId": "2b83c65c-15f4-49bd-9ed7-8aa716b706e0",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "xyWX1X4txPPp4jvW",
+          "name": "MCP Bearer Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"send_to_user\": false,\n\t\"feedback_output\": \"Requesting necessary details from user before proceeding with the investigation.\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1152,
+        -96
+      ],
+      "id": "93dcacf2-6ef7-42e5-84f7-d06948b194f0",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Query', ``, 'string') }}"
+      },
+      "type": "@brave/n8n-nodes-brave-search.braveSearchTool",
+      "typeVersion": 1,
+      "position": [
+        -2144,
+        -192
+      ],
+      "id": "148b90e4-1842-4f5e-8401-4f95d4cba218",
+      "name": "Brave Search",
+      "credentials": {
+        "braveSearchApi": {
+          "id": "h3c8eqIBcvarlqMU",
+          "name": "rgsaura -Brave Search"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "customer",
+        "operation": "create",
+        "name": "={{ $('ENTRADA (INPUT)').item.json.user_id }}",
+        "additionalFields": {
+          "email": "={{ $('Agente IA - ¿email usuario?').item.json.output.email }}",
+          "metadata": {
+            "metadataProperties": [
+              {
+                "key": "id",
+                "value": "={{ $('ENTRADA (INPUT)').item.json.user_id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.stripe",
+      "typeVersion": 1,
+      "position": [
+        -1632,
+        -1200
+      ],
+      "id": "cad06cad-dbea-469e-ad4e-1f052720f045",
+      "name": "Create a customer",
+      "credentials": {
+        "stripeApi": {
+          "id": "v84atlZjdiBndPcI",
+          "name": "rgsaura - Stripe account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Stripe",
+        "height": 704,
+        "width": 1232,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2688,
+        -1504
+      ],
+      "id": "c62ff604-dfd0-4eb4-abb1-a5c27ea2c396",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "url": "https://api.stripe.com/v1/invoices",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "stripeApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "customer",
+              "value": "={{ $json.data[0].id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1712,
+        -1408
+      ],
+      "id": "8648f09e-3e84-4b42-9900-52fbc6800d91",
+      "name": "find suscription",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "xyWX1X4txPPp4jvW",
+          "name": "MCP Bearer Auth account"
+        },
+        "stripeApi": {
+          "id": "v84atlZjdiBndPcI",
+          "name": "rgsaura - Stripe account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://api.stripe.com/v1/subscriptions/{{ $json.data[0].parent.subscription_details.subscription }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "stripeApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1536,
+        -1408
+      ],
+      "id": "823d31f9-365d-4b20-8c75-7d85d22c5e32",
+      "name": "status?",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "xyWX1X4txPPp4jvW",
+          "name": "MCP Bearer Auth account"
+        },
+        "stripeApi": {
+          "id": "v84atlZjdiBndPcI",
+          "name": "rgsaura - Stripe account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.stripe.com/v1/customers/search?query=metadata[\"id\"]:\"{{ $json.user_id }}\"",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "stripeApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2160,
+        -1408
+      ],
+      "id": "d209f511-5ddd-4b57-aaec-e83f0084416b",
+      "name": "customer?",
+      "credentials": {
+        "stripeApi": {
+          "id": "v84atlZjdiBndPcI",
+          "name": "rgsaura - Stripe account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"state\": true,\n\t\"email\": \"test@gmail.com\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -1920,
+        -976
+      ],
+      "id": "35d578c5-3ba5-4678-8c0d-dd48e57a2f95",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all binary keys from the webhook\nconst binaryData = $('Webhook').item.binary || {};\nconst imageKeys = Object.keys(binaryData);\n\n// Create output items for each image\nconst outputItems = [];\n\nfor (let i = 0; i < imageKeys.length; i++) {\n  const imageKey = imageKeys[i];\n  \n  // Create new item with the binary data and metadata\n  outputItems.push({\n    json: {\n      current_image_key: imageKey,\n      image_index: i,\n      total_images: imageKeys.length\n    },\n    binary: {\n      [imageKey]: binaryData[imageKey]\n    }\n  });\n}\n\nreturn outputItems;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -4096,
+        -672
+      ],
+      "id": "c518a0bb-db3a-49b5-919e-c91e9d8feb9d",
+      "name": "Split Images with Binary"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "text": "Describe what's in this image? Respond \"Image Provided Analysis:\"",
+        "inputType": "base64",
+        "binaryPropertyName": "={{ $json.current_image_key }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -3920,
+        -688
+      ],
+      "id": "86d70663-5c53-456f-ab0c-b12247145d15",
+      "name": "Analyze Image1",
+      "credentials": {
+        "openAiApi": {
+          "id": "6tinaV7utfDfCxA9",
+          "name": "rgsaura - OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "image_name",
+              "name": "image_name",
+              "type": "string",
+              "value": "={{ $('Split Images with Binary').item.json.current_image_key }}"
+            },
+            {
+              "id": "analysis_result",
+              "name": "analysis_result",
+              "type": "string",
+              "value": "={{ $('Analyze Image1').item.json.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3760,
+        -704
+      ],
+      "id": "3d7a1f80-9488-420d-b461-f2fd7d2eb931",
+      "name": "Format Results1"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "all_results",
+        "options": {
+          "includeBinaries": true
+        }
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -3600,
+        -704
+      ],
+      "id": "54f34234-6540-4f1b-9a23-abc331d2d952",
+      "name": "Collect All Results1"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to search for reverse image recognition",
+        "workflowId": {
+          "__rl": true,
+          "value": "A4sImK7YFnx4XLHi",
+          "mode": "list",
+          "cachedResultName": "FaceCheck.ID - API"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "search_id": "={{ Math.floor(10000000 + Math.random() * 90000000) }}",
+            "image_path": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('image_path', `put full image name. eg: \"image_0.png\". Always put .png if not given.`, 'string') }}"
+          },
+          "matchingColumns": [
+            "image"
+          ],
+          "schema": [
+            {
+              "id": "image_path",
+              "displayName": "image_path",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "search_id",
+              "displayName": "search_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "number",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -1472,
+        16
+      ],
+      "id": "d3789198-3a64-49e3-be5d-9368d26f04c3",
+      "name": "facecheck.id",
+      "retryOnFail": false,
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {
+          "includeBinaries": true
+        }
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -3872,
+        -512
+      ],
+      "id": "3e2c8c6e-74b9-4b37-9e9d-9b107bf3b5c5",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "content": "## ENTRADA (INPUT) - OpenWebUI\n\n",
+        "height": 560,
+        "width": 1376,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -4384,
+        -752
+      ],
+      "id": "820251b9-c209-4d8b-80b8-5b137ba06851",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## ENTRADA (INPUT) - Miscellaneous\n\n",
+        "height": 432,
+        "width": 848,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3856,
+        -144
+      ],
+      "id": "5dc76d07-33ba-4bbe-9766-3bfcd98062f9",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## MEMORIA\n",
+        "height": 304,
+        "width": 576,
+        "color": 4
+      },
+      "id": "310b5f4e-4b3a-49ce-8032-b70c84e28356",
+      "name": "Sticky Note8",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2304,
+        -704
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=images/{{ Math.floor(10000000 + Math.random() * 90000000) }}.{{ $json.result.file_path.split('.').pop() }}",
+        "options": {
+          "append": true
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -3760,
+        -1152
+      ],
+      "id": "d51b19df-8dfd-4544-9ea5-5c50f1173a8e",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "text": "Describe what's in this image? ",
+        "inputType": "base64",
+        "binaryPropertyName": "=data",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -3744,
+        -960
+      ],
+      "id": "4d1c933f-1da0-44c7-a5e3-7db665bc683f",
+      "name": "Analyze Image",
+      "credentials": {
+        "openAiApi": {
+          "id": "6tinaV7utfDfCxA9",
+          "name": "rgsaura - OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.voice.file_id }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "a57cd209-2403-46e3-9e1c-889280ba2eb4"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Voice"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8c844924-b2ed-48b0-935c-c66a8fd0c778",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "becc867a-6e9a-4e3d-87b9-10e9c9a87c16",
+                    "leftValue": "={{ $json.message.photo }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "array",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Image"
+            }
+          ]
+        },
+        "options": {
+          "allMatchingOutputs": false
+        }
+      },
+      "id": "f7c560ec-cd71-4928-8803-25ac9a0c1c46",
+      "name": "Tipo de Mensaje",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -4224,
+        -1120
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "db29e9e3-1f88-4a03-90b0-651587071385",
+              "name": "chat_id",
+              "value": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+              "type": "string"
+            },
+            {
+              "id": "fa77e6f9-cf73-4574-8e1c-08955a346404",
+              "name": "chatInput",
+              "value": "={{ $('Input').item.json.input }}",
+              "type": "string"
+            },
+            {
+              "id": "b0700d6c-2a8b-4792-ba4a-8401bf2cd356",
+              "name": "source",
+              "value": "=telegram",
+              "type": "string"
+            },
+            {
+              "id": "ea4e1505-5847-4729-8be1-c190a8975a55",
+              "name": "user_id",
+              "value": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3216,
+        -1088
+      ],
+      "id": "c3e13ea8-9a19-4c18-b0a3-8faf4a2398f6",
+      "name": "Normalización - Telegram",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "db29e9e3-1f88-4a03-90b0-651587071385",
+              "name": "chat_id",
+              "value": "={{ $json.chat_id }}",
+              "type": "string"
+            },
+            {
+              "id": "309db5f6-557a-4719-9643-e09e6effc077",
+              "name": "chatInput",
+              "value": "={{ $json.chatInput}}",
+              "type": "string"
+            },
+            {
+              "id": "97ff2ad5-7e14-4d31-852f-09c42cd1e4ac",
+              "name": "source",
+              "value": "={{ $json.source }}",
+              "type": "string"
+            },
+            {
+              "id": "46957fe0-f57f-43ef-91c9-2565849746d5",
+              "name": "user_id",
+              "value": "={{ $json.user_id }}",
+              "type": "string"
+            },
+            {
+              "id": "f1865f20-c931-480d-8b1c-5dd03a382b35",
+              "name": "System_propmt",
+              "value": "=",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2480,
+        -608
+      ],
+      "id": "e4747cf4-9f69-44b0-a74c-d23bbee85746",
+      "name": "ENTRADA (INPUT)",
+      "alwaysOutputData": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "db29e9e3-1f88-4a03-90b0-651587071385",
+              "name": "chat_id",
+              "value": "={{ $('Webhook').item.json.body.chat_id }}",
+              "type": "string"
+            },
+            {
+              "id": "309db5f6-557a-4719-9643-e09e6effc077",
+              "name": "chatInput",
+              "value": "={{ $('Webhook').item.json.body.chatInput }}\n\nIf you see images below, the user sent them and you have them available by their name (eg:image_0.png), thats their path:\n{{ $json.image_analisis }}",
+              "type": "string"
+            },
+            {
+              "id": "1bb93b59-1021-466f-a9ff-84a736df2ce6",
+              "name": "source",
+              "value": "webhook",
+              "type": "string"
+            },
+            {
+              "id": "6ef3f13e-a4fb-461f-94a8-e3b386713169",
+              "name": "user_id",
+              "value": "={{ $('Webhook').item.json.body.user_id }}",
+              "type": "string"
+            },
+            {
+              "id": "bdd44d70-2ad6-4b22-8d69-8d96f3fefc27",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2848,
+        -448
+      ],
+      "id": "199d2ac2-fe3e-4685-9ab5-7697b53c437b",
+      "name": "Normalización - Webhook",
+      "alwaysOutputData": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "31400a1e-336d-4d54-8533-e29e678671dc",
+              "name": "image_analisis",
+              "value": "={{ JSON.stringify($('Collect All Results1').item.json.all_results) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3152,
+        -640
+      ],
+      "id": "39e6b085-fc33-41d8-879b-26834ae6a363",
+      "name": "image_analisis"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "31400a1e-336d-4d54-8533-e29e678671dc",
+              "name": "image_analisis",
+              "value": "=",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3456,
+        -448
+      ],
+      "id": "71c4004e-797e-4fd2-942b-8a5b352a949a",
+      "name": "image_analisis1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('ENTRADA (INPUT)').item.json.chatInput }}",
+        "options": {
+          "systemMessage": "=You are an OSINT assistant specializing in digital fingerprints and social profiling, with access to investigative tools for open-source intelligence gathering. Your goal is to help the user find information and validate information found. When all information found is validated with user we will do a final report.\n\nIf the user has not provided a clear query to investigate, **request the necessary details first**.\n\n{{ $now }}\n\n---\n\n## REPORTING RULES:\n- **Dynamic structure:** Only output sections for which data was found, except **Source Log**, which must always be shown with all tools used (including failed or empty results).\n- Each included section must contain:\n  - **Confirmed findings**\n  - **Unconfirmed findings** (clearly marked)\n- Keep the report short, concise, and strictly factual — only list what has been found.\n- Suggest practical next steps in the final section.\n- **Do not create an HTML carousel unless images exist**. If none exist, omit without comment.\n\n---\n\n## METHODOLOGY:\n1. Gather and cross-check data using all available OSINT tools.\n2. Present only relevant, verified, or potentially relevant data points.\n3. Separate confirmed from unconfirmed information.\n4. Exclude any section entirely if no findings exist (except Source Log).\n5. Provide actionable recommendations to continue investigation at the end.\n\n---\n\n## OUTPUT STRUCTURE:\n\n*(Brief scope of investigation and summary of key findings.)*\n\n## 📌 Subject Overview  \n- **Confirmed:** [Only if data exists]  \n- **Unconfirmed:** [Only if data exists]  \n\n## 📧 Contact Information  \n**Only show if at least one email or phone number is found.**  \n### Email Addresses  \n| Email | Source | Validated | Notes |\n|-------|--------|-----------|-------|\n### Phone Numbers  \n| Number | Type | Source | Notes |\n|--------|------|--------|-------|\n\n## 🌐 Social Media Presence  \n**Only show if at least one profile is found.**  \n| Platform | Username | Profile URL | Activity Level | Notes |\n|----------|----------|-------------|----------------|-------|\n\n## 🔑 Breached Credentials  \n**Only show if at least one breach record is found.**  \n| Email/User | Password | Breach Source | Date | Notes |\n|------------|----------|---------------|------|-------|\n\n## 📷 Media & Images  \n**Only show if at least one image or file is found.**  \nDon't mention images name. Give images in markdown format ![Image_1](Display_url). I want to always show user \"Display_url\", \"url\" and \"score\" of images found.\n\n## 🧠 Psychological Profile  \n**Only show if at least one trait/behavior is found.**  \n- **Confirmed:** [Only if data exists]  \n- **Unconfirmed:** [Only if data exists]  \n\n## 🔎 Technical Metadata  \n**Only show if at least one data point is found.**  \n| Data Type | Source | Tool Used | Confidence |\n|-----------|--------|-----------|------------|\n\n## 📁 Source Log  \n**Always show this section — list all tools used, even if no data was found.**  \n| Tool | Purpose | Output Type | Result Status | Timestamp |\n|------|---------|-------------|---------------|-----------|\n\n## → Next Steps\n- [List practical next steps based on gathered data]  \n\n---\n\nIf **images are found**, generate an **HTML carousel** with black background.  \nIf **no images are found**, omit the carousel entirely.\n\n---\n\n**Language:** Respond in **English** or **Spanish** based on the user’s original query.\n\n\n**Tools:** Use all tools at your disposal. If user gives image, use facecheck.id tool."
+        }
+      },
+      "id": "c81f5a8a-eb8d-4550-9e6d-57d26a07c966",
+      "name": "AGENTE IA - INVESTIGADOR",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        -2240,
+        -608
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=User Input: {{ $('ENTRADA (INPUT)').item.json.chatInput }}\n\nAgent Response: {{ $('AGENTE IA - INVESTIGADOR').item.json.output }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are an Agent Output Validator. Evaluate if responses adequately address user queries and determine investigation continuation.\n\nVALIDATION CRITERIA:\n• Query relevance\n• Investigation completeness\n• Data accuracy/depth\n\nCONTINUATION LOGIC:\nSet \"sned_to_user\": \"true\" when ALL conditions met:\n• Agent response addresses user query appropriately\n• No additional relevant data available\n• Further investigation adds no value\n\nSet \"send_to_user\": \"false\" when:\n• Investigation incomplete\n• Response inadequate\n• Further research is available with new adquired data\n\n\"\"\"\nOUTPUT FORMAT:\n{\"send_to_user\": true/false,\"feedback_output\": \"Detailed feedback here\"}\n\"\"\"\n\nThis is the order propmt given to the prior agent:\n{{ $('ENTRADA (INPUT)').item.json.System_propmt }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -1184,
+        -288
+      ],
+      "id": "ce053ab5-aa53-496b-b89f-7b34572ad526",
+      "name": "AGENTE IA - VALIDADOR & OPTIMIZADOR"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3f7ed8b4-c84c-482b-9303-93f6a10aed7d",
+              "name": "output",
+              "value": "={{ $('AGENTE IA - INVESTIGADOR').item.json.output }}",
+              "type": "string"
+            },
+            {
+              "id": "3534a69c-93d0-4cef-a388-97860568526d",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -816,
+        -752
+      ],
+      "id": "dde7fecc-87e7-4038-aeb7-c879d058e1ee",
+      "name": "SALIDA (OUTPUT)"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('ENTRADA (INPUT)').item.json.source }}",
+                    "rightValue": "workflow",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "aa93ae49-91a6-480e-9688-6e4a036e4f18"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "workflow"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "df443784-5c4b-4885-aa76-8b4ce5b10223",
+                    "leftValue": "={{ $('ENTRADA (INPUT)').item.json.source }}",
+                    "rightValue": "webhook",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Webhook"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "04277762-0237-46db-92d2-c5b56d2e41cb",
+                    "leftValue": "={{ $('ENTRADA (INPUT)').item.json.source }}",
+                    "rightValue": "telegram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "telegram"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -448,
+        -864
+      ],
+      "id": "feff69da-1dbf-46fe-a629-76c69e53b67b",
+      "name": "Redirección",
+      "alwaysOutputData": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "13QjDcZksnylvQTvo9r2Q7eZ65ExJhxiq0dfAcLWalHY",
+          "mode": "list",
+          "cachedResultName": "OSINT Logs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13QjDcZksnylvQTvo9r2Q7eZ65ExJhxiq0dfAcLWalHY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/144h5vN3d_SsZMNkZncQAKMrwJ3wkceUEq47dO7FwLyA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Timestamp": "={{ $now.format('yyyy-MM-dd hh:m a') }}",
+            "Workflow": "={{ $workflow.name }}",
+            "Input": "={{ $('ENTRADA (INPUT)').item.json.chatInput }}",
+            "Actions": "={{ JSON.stringify($('Clean Up').steps, null, 2) }}",
+            "Tokens": "={{ JSON.stringify($('Clean Up').tokens, null, 2) }}",
+            "output": "={{ $('AGENTE IA - INVESTIGADOR').item.json.output }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Workflow",
+              "displayName": "Workflow",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Input",
+              "displayName": "Input",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "output",
+              "displayName": "output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Actions",
+              "displayName": "Actions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tokens",
+              "displayName": "Tokens",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "0 Tokens totales",
+              "displayName": "0 Tokens totales",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -624,
+        -752
+      ],
+      "id": "4deb894e-f096-4168-abaf-1e6cdedbbaa2",
+      "name": "Registro",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LLL1wu2vwMRg3YoN",
+          "name": "rgsaura - Google Sheets account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=images/{{ Math.floor(10000000 + Math.random() * 90000000) }}.{{ $('Webhook').item.binary.image_0.fileExtension }}",
+        "dataPropertyName": "image_0",
+        "options": {
+          "append": true
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -3680,
+        -512
+      ],
+      "id": "9a622563-8f87-47f4-9bc8-a618ce20f046",
+      "name": "Imágen a Disco"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.binary }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "b2927b45-ebd7-4f27-849a-a3f135ac2fee"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Imagen"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "33910a9b-71d2-4a9b-9641-093c44a1f999",
+                    "leftValue": "={{ $('Webhook').item.binary }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "notExists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Texto"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -4096,
+        -464
+      ],
+      "id": "5fd17ff7-c1bf-4678-a916-11c5d8c3f7f1",
+      "name": "Redirección1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "array",
+                      "operation": "notEmpty",
+                      "singleValue": true
+                    },
+                    "id": "30e14fe6-6f0d-4f66-a79b-12b878f96067"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "existe"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8538a057-dfed-406d-b60f-907100332f11",
+                    "leftValue": "={{ $json.data }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "array",
+                      "operation": "empty",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "No existe"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1952,
+        -1408
+      ],
+      "id": "b257d175-ab4b-47b7-8254-6d7252ffe0d4",
+      "name": "Redirección2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output.state }}",
+                    "rightValue": true,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    },
+                    "id": "49b691bf-2eb4-49e1-9b97-0729548b9c35"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f8ad6aeb-5e1c-4a95-87e2-bc564dc617fb",
+                    "leftValue": "={{ $json.output.state }}",
+                    "rightValue": false,
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1776,
+        -1120
+      ],
+      "id": "e8e68d2f-16e5-4771-a552-feb9b81db127",
+      "name": "Redirección3"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "active",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "689afe1e-acc7-4b83-a560-e06810c60644"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "active"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "77e7b87a-f154-4f98-82ec-7d76ab977d60",
+                    "leftValue": "={{ $json.status }}",
+                    "rightValue": "canceled",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "inactive"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -1376,
+        -1408
+      ],
+      "id": "d26c48f8-9b8b-4b4e-8b17-2ee57bccbd67",
+      "name": "Redirección4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2046749d-8424-4e66-a78a-b690622808a3",
+              "name": "output",
+              "value": "=Paga tu suscripción en {{ $json.url }}",
+              "type": "string"
+            },
+            {
+              "id": "fab41d72-0526-45de-8089-17e1f84ddada",
+              "name": "",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "dd4b8319-b32d-45e7-9469-486ffef1d8bb",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1280,
+        -1072
+      ],
+      "id": "75bc207b-8592-45ba-9ff9-54b2c26f79a0",
+      "name": "Normalizacion"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "759a5b69-3570-404e-a54e-8659b0a93dfe",
+              "name": "output",
+              "value": "Por favor, proporcione su email:",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1504,
+        -976
+      ],
+      "id": "8ecc5dfd-3367-4b33-a791-1a36526407b4",
+      "name": "Normalizacion1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Do we have users email?\n{{ $('ENTRADA (INPUT)').item.json.chatInput }}",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -2064,
+        -1120
+      ],
+      "id": "27c2d2ef-7567-44b3-b05f-1151049cf2f4",
+      "name": "Agente IA - ¿email usuario?"
+    },
+    {
+      "parameters": {
+        "toolDescription": "Performs phone number lookup using TrueCaller API to identify caller information, name, and associated details for a given phone number and country code. Don't put \"+\", just number.",
+        "url": "=https://truecaller-data1.p.rapidapi.com/rapid_api/truecaller/{{ $fromAI('phonenumber') }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-rapidapi-host",
+              "value": "truecaller-data1.p.rapidapi.com"
+            },
+            {
+              "name": "x-rapidapi-key",
+              "value": "266a445f5emsh3c736b44d8d01f9p116482jsnc8891fe6dbe8"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3a5c3d04-ec14-4aa7-b9a3-e42ddf28b8d1",
+      "name": "TrueCaller",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -2112,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "toolDescription": "Searches for data breaches and leaked information using LeakOSINT API. Provides comprehensive breach data for emails, usernames, and other identifiers.",
+        "method": "POST",
+        "url": "=https://leakosintapi.com",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "13344530:wEZD2r6K"
+            },
+            {
+              "name": "request",
+              "value": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('parameters1_Value', ``, 'string') }}"
+            },
+            {
+              "name": "lang",
+              "value": "en"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8904ed75-bddb-47e5-b565-7a53b4a7f228",
+      "name": "LeakOSINT",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        -2256,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -1520,
+        -528
+      ],
+      "id": "bb399c0b-a747-48fc-bcd1-a9f5f3aee141",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "6tinaV7utfDfCxA9",
+          "name": "rgsaura - OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "1af986cb-6ffb-43f3-8f37-fcb8c193471c",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "false",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.output.send_to_user }}",
+                    "rightValue": ""
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Feedback"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "c5429b40-ae2b-40a6-9a65-f7bbb4dec7a2",
+                    "operator": {
+                      "type": "boolean",
+                      "operation": "true",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $json.output.send_to_user }}",
+                    "rightValue": ""
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Continue"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "4dec669c-b78e-47bd-804f-1cc6640216ba",
+      "name": "Redirección5",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -832,
+        -304
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c9d21d5e-45a7-4bac-9c2d-d8665eaa279b",
+              "name": "chat_id",
+              "type": "string",
+              "value": "={{ $('ENTRADA (INPUT)').item.json.chat_id }}"
+            },
+            {
+              "id": "3389c941-19a4-43ad-b109-0ccb75ebb552",
+              "name": "chatInput",
+              "type": "string",
+              "value": "={{ $('ENTRADA (INPUT)').item.json.chatInput }}"
+            },
+            {
+              "id": "7b8ba954-6302-4fa1-9a48-4b178209b207",
+              "name": "FeedBackPrompt",
+              "type": "string",
+              "value": "={{ $('AGENTE IA - VALIDADOR & OPTIMIZADOR').item.json.output.feedback_output }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "08b5f3ef-7868-42f3-9ed0-f7a6e2e30ec0",
+      "name": "Corrector",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -496,
+        -320
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.stripe.com/v1/checkout/sessions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "stripeApi",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "mode",
+              "value": "subscription"
+            },
+            {
+              "name": "customer",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "line_items[0][price]",
+              "value": "price_1RuGNfRc9vO4JTKbj56bzkld"
+            },
+            {
+              "name": "line_items[0][quantity]",
+              "value": "1"
+            },
+            {
+              "name": "success_url",
+              "value": "https://t.me/OSINT_RG_Bot"
+            },
+            {
+              "name": "cancel_url",
+              "value": "https://t.me/OSINT_RG_Bot"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1488,
+        -1200
+      ],
+      "id": "b34bef68-292b-47ce-a418-4af84a407e00",
+      "name": "link pago",
+      "credentials": {
+        "stripeApi": {
+          "id": "v84atlZjdiBndPcI",
+          "name": "rgsaura - Stripe account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.stripe.com/v1/checkout/sessions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "stripeApi",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "mode",
+              "value": "subscription"
+            },
+            {
+              "name": "customer",
+              "value": "={{ $item(\"0\").$node[\"customer?\"].json[\"data\"][\"0\"][\"id\"] }}"
+            },
+            {
+              "name": "line_items[0][price]",
+              "value": "price_1RuGNfRc9vO4JTKbj56bzkld"
+            },
+            {
+              "name": "line_items[0][quantity]",
+              "value": "1"
+            },
+            {
+              "name": "success_url",
+              "value": "https://t.me/OSINT_RG_Bot"
+            },
+            {
+              "name": "cancel_url",
+              "value": "https://t.me/OSINT_RG_Bot"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1200,
+        -1328
+      ],
+      "id": "978d813e-cb54-4be1-9116-1056fb539bbc",
+      "name": "link pago1",
+      "credentials": {
+        "stripeApi": {
+          "id": "v84atlZjdiBndPcI",
+          "name": "rgsaura - Stripe account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "88a0837d-c21f-4b90-b735-f720c88aed10",
+      "name": "Telegram Trigger1",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -6128,
+        -640
+      ],
+      "webhookId": "99eab1a0-569d-4f0f-a49e-578a02abfe63",
+      "credentials": {
+        "telegramApi": {
+          "id": "dloPE4eyiVNVW2ZJ",
+          "name": "rgsaura - Telegram account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## Mantenimiento",
+        "height": 656,
+        "width": 1056,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -6288,
+        -1008
+      ],
+      "id": "e4654c06-f11e-443d-b2a1-6b86f3ece90b",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -5696,
+        -640
+      ],
+      "id": "55ccdb80-591a-43f3-85a6-9a31c3afe7dd",
+      "name": "Response1",
+      "webhookId": "4d174459-d5cc-4297-a449-369d3f10ef23",
+      "credentials": {
+        "telegramApi": {
+          "id": "dloPE4eyiVNVW2ZJ",
+          "name": "rgsaura - Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2cda519c-ee99-4f20-90a9-69cb0655d68c",
+              "name": "output",
+              "value": "Maintenance ⚠︎ / Mantenimiento ⚠︎",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -5920,
+        -640
+      ],
+      "id": "128fcf01-3b0e-4b4d-9581-9bd0f4f14670",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -6064,
+        -912
+      ],
+      "id": "476e325d-a046-4e29-be0f-1901de2d339e",
+      "name": "Error Trigger",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -3552,
+        -1056
+      ],
+      "id": "6cc90ae2-3818-4166-ac68-eacb4852fc47",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "operation": "editMessageText",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "messageId": "={{ $('Processing...').item.json.result.message_id }}",
+        "text": "={{ $('Redirección').item.json.output }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        64,
+        -640
+      ],
+      "id": "0f05caec-907d-46f9-882e-1409f9e641e3",
+      "name": "Edit a text message",
+      "webhookId": "cf1a3adf-461a-4450-a491-9e3e096d3006",
+      "credentials": {
+        "telegramApi": {
+          "id": "dloPE4eyiVNVW2ZJ",
+          "name": "rgsaura - Telegram account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "Processing... ",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -3152,
+        -1328
+      ],
+      "id": "d5c09a7f-5aa1-4599-bf73-b90de8bc0bc1",
+      "name": "Processing...",
+      "webhookId": "a33a1ebf-cc21-4c13-bebd-fcec102280d5",
+      "credentials": {
+        "telegramApi": {
+          "id": "dloPE4eyiVNVW2ZJ",
+          "name": "rgsaura - Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "976cf2c9-01b6-46cf-97b4-675a67ca57bc",
+              "name": "input",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "ignoreConversionErrors": true
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3392,
+        -1296
+      ],
+      "id": "f2939c3b-1aa6-4984-97b9-a664378bef89",
+      "name": "Input",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "976cf2c9-01b6-46cf-97b4-675a67ca57bc",
+              "name": "text",
+              "value": "={{ $('Telegram Trigger').item.json.message.caption }}\n\nIf you see images below, the user sent them and you have them available by their name (eg:image_0.png), thats their path:\n\"{{ $json.fileName }}\" - {{ $json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "ignoreConversionErrors": true
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3408,
+        -1104
+      ],
+      "id": "e42e6f96-941d-4653-89d4-2ed97df0dd16",
+      "name": "Input1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "resource": "execution",
+        "operation": "get",
+        "executionId": "={{ $json.execution.id }}",
+        "options": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        -5872,
+        -896
+      ],
+      "id": "4c54ddb9-81c3-4cf2-ba65-9630d354d3d6",
+      "name": "Get an execution",
+      "credentials": {
+        "n8nApi": {
+          "id": "BSllNj75gialU5n8",
+          "name": "n8n account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "mode": "delete",
+        "deleteMode": "all"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryManager",
+      "typeVersion": 1.1,
+      "position": [
+        -3984,
+        -1520
+      ],
+      "id": "54c7cded-3351-440f-ab33-c4ebcd38f4fa",
+      "name": "Chat Memory Manager"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Telegram Trigger').item.json.message.text }}",
+                    "rightValue": "/reset_chat",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f8918172-9d6a-4471-bbff-6ebe96bf13e6"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -4176,
+        -1344
+      ],
+      "id": "5950be34-adf3-4084-a9ad-9cccc1ff9700",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "Done ☑️",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -3616,
+        -1616
+      ],
+      "id": "1ae44917-6881-4426-8813-84ef616e3849",
+      "name": "Done ☑️",
+      "webhookId": "a33a1ebf-cc21-4c13-bebd-fcec102280d5",
+      "credentials": {
+        "telegramApi": {
+          "id": "dloPE4eyiVNVW2ZJ",
+          "name": "rgsaura - Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -3984,
+        -1312
+      ],
+      "id": "52ea6867-1ccc-4e67-97de-aae319f558d3",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "operation": "editMessageText",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "messageId": "={{ $('Processing...').item.json.result.message_id }}",
+        "text": "=Investigation lap - {{ Math.floor(10000000 + Math.random() * 90000000) }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -272,
+        -304
+      ],
+      "id": "083d26e0-995d-41a7-9d6d-4723b381e8bd",
+      "name": "Edit a text message1",
+      "webhookId": "cf1a3adf-461a-4450-a491-9e3e096d3006",
+      "alwaysOutputData": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "dloPE4eyiVNVW2ZJ",
+          "name": "rgsaura - Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $('Redirección').item.json.output }}",
+        "conversionOptions": {
+          "preserveLineBreaks": false,
+          "strictMode": false,
+          "autoEscape": false
+        }
+      },
+      "type": "@techflecks/n8n-nodes-telegram-markdown-parser.telegramMarkdownParser",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        -704
+      ],
+      "id": "7af608e5-90ab-4e2d-abb6-f2ae149318d5",
+      "name": "Telegram Markdown Parser By TechFlecks"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -3456,
+        -640
+      ],
+      "id": "4fded235-e78e-4a79-ba20-29dc939c77fb",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -3296,
+        -640
+      ],
+      "id": "009c5c80-3d51-41c7-a3ad-9396c790102c",
+      "name": "Limit"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "query": "34684102691",
+          "chat_id": "9b41b3e8-a013-402c-9ae5-88074496efa3"
+        }
+      }
+    ],
+    "Create a customer": [
+      {
+        "json": {
+          "id": "cus_SpwXYN251tix3r",
+          "object": "customer",
+          "address": null,
+          "balance": 0,
+          "created": 1754760840,
+          "currency": null,
+          "default_source": null,
+          "delinquent": false,
+          "description": null,
+          "discount": null,
+          "email": null,
+          "invoice_prefix": "FDH7Q8LG",
+          "invoice_settings": {
+            "custom_fields": null,
+            "default_payment_method": null,
+            "footer": null,
+            "rendering_options": null
+          },
+          "livemode": false,
+          "metadata": {
+            "id": "dd217488-d10b-44b2-a383-11c483677812"
+          },
+          "name": "dd217488-d10b-44b2-a383-11c483677812",
+          "phone": null,
+          "preferred_locales": [],
+          "shipping": null,
+          "tax_exempt": "none",
+          "test_clock": null
+        }
+      }
+    ],
+    "Telegram Trigger1": [
+      {
+        "json": {
+          "update_id": 45420868,
+          "message": {
+            "message_id": 147,
+            "from": {
+              "id": 13344530,
+              "is_bot": false,
+              "first_name": "Rodri",
+              "username": "x10000000001",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 13344530,
+              "first_name": "Rodri",
+              "username": "x10000000001",
+              "type": "private"
+            },
+            "date": 1754917952,
+            "text": "hey"
+          }
+        }
+      }
+    ],
+    "Error Trigger": [
+      {
+        "json": {
+          "execution": {
+            "id": "1596",
+            "url": "https://n8n.rgsaura.com/workflow/fIVoF74uCkbqLe7q/executions/1596",
+            "error": {
+              "level": "warning",
+              "tags": {},
+              "timestamp": 1755700005196,
+              "context": {},
+              "functionality": "regular",
+              "name": "NodeOperationError",
+              "node": {
+                "parameters": {
+                  "aiAgentStarterCallout": "",
+                  "promptType": "define",
+                  "text": "=User Input: {{ $('ENTRADA (INPUT)').item.json.chatInput }}\n\nAgent Response: {{ $('AGENTE IA - INVESTIGADOR').item.json.output }}",
+                  "hasOutputParser": true,
+                  "notice": "",
+                  "needsFallback": false,
+                  "options": {
+                    "systemMessage": "=You are an Agent Output Validator. Evaluate if responses adequately address user queries and determine investigation continuation.\n\nVALIDATION CRITERIA:\n• Query relevance\n• Investigation completeness\n• Data accuracy/depth\n\nCONTINUATION LOGIC:\nSet \"continue_to_user\": \"true\" when ALL conditions met:\n• Response addresses user query appropriately\n• No additional relevant data available\n• Further investigation adds no value\n\nSet \"continue_to_user\": \"false\" when:\n• Investigation incomplete\n• Response inadequate\n• Additional relevant data exists\n\n\"\"\"\nOUTPUT FORMAT:\n{\n\t\"continue_to_user\": true/false,\n\t\"feedback_output\": \"Detailed feedback here\"\n}\n\"\"\"\n\nThis is the order propmt given to the prior agent:\n{{ $('ENTRADA (INPUT)').item.json.System_propmt }}"
+                  }
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 2.1,
+                "position": [
+                  -1792,
+                  -240
+                ],
+                "id": "ce053ab5-aa53-496b-b89f-7b34572ad526",
+                "name": "AGENTE IA - VALIDADOR & OPTIMIZADOR"
+              },
+              "messages": [],
+              "message": "Aborted",
+              "stack": "NodeOperationError: Aborted\n    at /usr/local/lib/node_modules/n8n/node_modules/.pnpm/@n8n+n8n-nodes-langchain@file+packages+@n8n+nodes-langchain_c7791fa0cf1054f8be91f739b153c14e/node_modules/@n8n/n8n-nodes-langchain/nodes/agents/Agent/agents/ToolsAgent/V2/execute.ts:305:12\n    at Array.forEach (<anonymous>)\n    at ExecuteContext.toolsAgentExecute (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/@n8n+n8n-nodes-langchain@file+packages+@n8n+nodes-langchain_c7791fa0cf1054f8be91f739b153c14e/node_modules/@n8n/n8n-nodes-langchain/nodes/agents/Agent/agents/ToolsAgent/V2/execute.ts:294:16)\n    at ExecuteContext.execute (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/@n8n+n8n-nodes-langchain@file+packages+@n8n+nodes-langchain_c7791fa0cf1054f8be91f739b153c14e/node_modules/@n8n/n8n-nodes-langchain/nodes/agents/Agent/V2/AgentV2.node.ts:117:10)\n    at WorkflowExecute.runNode (/usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.29_46e522f8a77ed5eccc0991bfcca21502/node_modules/n8n-core/src/execution-engine/workflow-execute.ts:1212:9)\n    at /usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.29_46e522f8a77ed5eccc0991bfcca21502/node_modules/n8n-core/src/execution-engine/workflow-execute.ts:1582:27\n    at /usr/local/lib/node_modules/n8n/node_modules/.pnpm/n8n-core@file+packages+core_@opentelemetry+api@1.9.0_@opentelemetry+sdk-trace-base@1.29_46e522f8a77ed5eccc0991bfcca21502/node_modules/n8n-core/src/execution-engine/workflow-execute.ts:2158:11"
+            },
+            "lastNodeExecuted": "AGENTE IA - VALIDADOR & OPTIMIZADOR",
+            "mode": "webhook"
+          },
+          "workflow": {
+            "id": "fIVoF74uCkbqLe7q",
+            "name": "OSINT Digital Footprint & Profile Investigator"
+          }
+        }
+      }
+    ],
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 45420943,
+          "message": {
+            "message_id": 295,
+            "from": {
+              "id": 13344530,
+              "is_bot": false,
+              "first_name": "Rodri",
+              "username": "x10000000001",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 13344530,
+              "first_name": "Rodri",
+              "username": "x10000000001",
+              "type": "private"
+            },
+            "date": 1755706456,
+            "photo": [
+              {
+                "file_id": "AgACAgQAAxkBAAIBIGil7QoTzA-8cdL5MN4c6ihVZ3K2AALr1DEb0cMxURb8wa6CJLGtAQADAgADcwADNgQ",
+                "file_unique_id": "AQAD69QxG9HDMVF4",
+                "file_size": 1465,
+                "width": 90,
+                "height": 90
+              },
+              {
+                "file_id": "AgACAgQAAxkBAAIBIGil7QoTzA-8cdL5MN4c6ihVZ3K2AALr1DEb0cMxURb8wa6CJLGtAQADAgADbQADNgQ",
+                "file_unique_id": "AQAD69QxG9HDMVFy",
+                "file_size": 16413,
+                "width": 320,
+                "height": 320
+              },
+              {
+                "file_id": "AgACAgQAAxkBAAIBIGil7QoTzA-8cdL5MN4c6ihVZ3K2AALr1DEb0cMxURb8wa6CJLGtAQADAgADeAADNgQ",
+                "file_unique_id": "AQAD69QxG9HDMVF9",
+                "file_size": 51733,
+                "width": 640,
+                "height": 640
+              }
+            ],
+            "caption": "eduSatoe"
+          }
+        }
+      }
+    ],
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "connection": "upgrade",
+            "host": "n8n.rgsaura.com",
+            "x-real-ip": "172.18.0.3",
+            "x-forwarded-for": "172.18.0.3",
+            "x-forwarded-proto": "https",
+            "content-length": "67344",
+            "accept": "*/*",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "user-agent": "python-httpx/0.28.1",
+            "authorization": "Bearer your-token-here",
+            "content-type": "multipart/form-data; boundary=577482e3e6d7394ca296e42ba8b71198"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "sessionId": "dd217488-d10b-44b2-a383-11c483677812 - You are an orquestration system/personal assistant. Use tools and other assistants at your disposal.",
+            "user_id": "dd217488-d10b-44b2-a383-11c483677812",
+            "user_email": "info@rgsaura.com",
+            "user_name": "Rodrigo García Saura",
+            "user_role": "admin",
+            "chat_id": "05b5d058-9019-4679-94f7-43980b50d816",
+            "message_id": "2390014b-87b3-4f6f-b860-c10fccceb345",
+            "chatInput": ""
+          },
+          "webhookUrl": "https://n8n.rgsaura.com/webhook/osint",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "MCP kali linux": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AGENTE IA - VALIDADOR & OPTIMIZADOR",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Agente IA - ¿email usuario?",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Structured Output Parser1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Whatsapp Data rapidapi": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "breachdirectory": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "osint-world": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "facesearchai.com": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Perplexity": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Redirección1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "ENTRADA (INPUT)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zep Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Tipo de Mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set 'Text'": {
+      "main": [
+        [
+          {
+            "node": "Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Voice File": {
+      "main": [
+        [
+          {
+            "node": "Transcribe Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe Audio": {
+      "main": [
+        [
+          {
+            "node": "Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get image": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Analyze Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Digital Footprint Investigation": {
+      "ai_tool": [
+        [
+          {
+            "node": "OSINT MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "chat id5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "chat id5": {
+      "main": [
+        [
+          {
+            "node": "ENTRADA (INPUT)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AGENTE IA - VALIDADOR & OPTIMIZADOR",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Brave Search": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a customer": {
+      "main": [
+        [
+          {
+            "node": "link pago",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "find suscription": {
+      "main": [
+        [
+          {
+            "node": "status?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "status?": {
+      "main": [
+        [
+          {
+            "node": "Redirección4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "link pago1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "customer?": {
+      "main": [
+        [
+          {
+            "node": "Redirección2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Agente IA - ¿email usuario?",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Images with Binary": {
+      "main": [
+        [
+          {
+            "node": "Analyze Image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Image1": {
+      "main": [
+        [
+          {
+            "node": "Format Results1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Results1": {
+      "main": [
+        [
+          {
+            "node": "Collect All Results1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect All Results1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "facecheck.id": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Imágen a Disco",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Image": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Tipo de Mensaje": {
+      "main": [
+        [
+          {
+            "node": "Download Voice File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalización - Telegram": {
+      "main": [
+        [
+          {
+            "node": "ENTRADA (INPUT)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ENTRADA (INPUT)": {
+      "main": [
+        [
+          {
+            "node": "customer?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalización - Webhook": {
+      "main": [
+        [
+          {
+            "node": "ENTRADA (INPUT)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "image_analisis": {
+      "main": [
+        [
+          {
+            "node": "Normalización - Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "image_analisis1": {
+      "main": [
+        [
+          {
+            "node": "Normalización - Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AGENTE IA - INVESTIGADOR": {
+      "main": [
+        [
+          {
+            "node": "SALIDA (OUTPUT)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AGENTE IA - VALIDADOR & OPTIMIZADOR": {
+      "main": [
+        [
+          {
+            "node": "Redirección5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SALIDA (OUTPUT)": {
+      "main": [
+        [
+          {
+            "node": "Registro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redirección": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram Markdown Parser By TechFlecks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registro": {
+      "main": [
+        [
+          {
+            "node": "Redirección",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Imágen a Disco": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redirección1": {
+      "main": [
+        [
+          {
+            "node": "Split Images with Binary",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "image_analisis1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redirección2": {
+      "main": [
+        [
+          {
+            "node": "find suscription",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agente IA - ¿email usuario?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redirección3": {
+      "main": [
+        [
+          {
+            "node": "Create a customer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Normalizacion1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redirección4": {
+      "main": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "link pago1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizacion": {
+      "main": [
+        [
+          {
+            "node": "Redirección",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizacion1": {
+      "main": [
+        [
+          {
+            "node": "Redirección",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente IA - ¿email usuario?": {
+      "main": [
+        [
+          {
+            "node": "Redirección3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TrueCaller": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LeakOSINT": {
+      "ai_tool": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Zep Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redirección5": {
+      "main": [
+        [
+          {
+            "node": "Corrector",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SALIDA (OUTPUT)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Corrector": {
+      "main": [
+        [
+          {
+            "node": "Edit a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "link pago": {
+      "main": [
+        [
+          {
+            "node": "Normalizacion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "link pago1": {
+      "main": [
+        [
+          {
+            "node": "Normalizacion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Response1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Input1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit a text message": {
+      "main": [
+        [],
+        []
+      ]
+    },
+    "Processing...": {
+      "main": [
+        [
+          {
+            "node": "Normalización - Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "Processing...",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input1": {
+      "main": [
+        [
+          {
+            "node": "Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get an execution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Chat Memory Manager",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set 'Text'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Memory Manager": {
+      "main": [
+        [
+          {
+            "node": "Done ☑️",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Chat Memory Manager",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit a text message1": {
+      "main": [
+        [
+          {
+            "node": "AGENTE IA - INVESTIGADOR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Markdown Parser By TechFlecks": {
+      "main": [
+        [
+          {
+            "node": "Edit a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "image_analisis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionTimeout": 300,
+    "executionOrder": "v0",
+    "timeSavedPerExecution": 5
+  },
+  "versionId": "484ba6ce-856f-490b-ad7b-26e9b872d03a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5ff63cb629e7639326592673fe1b7ea80495e615385e510e0b5160f31591b837"
+  },
+  "id": "fIVoF74uCkbqLe7q",
+  "tags": []
+}
