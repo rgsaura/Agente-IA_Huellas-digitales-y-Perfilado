@@ -1,5 +1,9 @@
 # Agente IA de Huella Digital y Perfilado Automatizado
 
+**Bot de Telegram** https://t.me/OSINT_RG_Bot
+
+---
+
 ## Resumen del Proyecto
 
 Este Trabajo de Fin de Máster (TFM) presenta el desarrollo de un sistema automatizado para la obtención y análisis de la huella digital y el perfilado de entidades, integrando plataformas modernas como N8N, OpenWebUI, MCP Servers y diversas APIs OSINT. El objetivo es centralizar, normalizar y exponer información de múltiples fuentes para facilitar su procesamiento por sistemas de inteligencia artificial.
@@ -74,7 +78,13 @@ La integración de plataformas de automatización, interfaces modernas y APIs es
 
 ---
 
-**Bot de Telegram** https://t.me/OSINT_RG_Bot
+
+## Imágenes del Proyecto
+<img width="1343" height="644" alt="Digital Footprint & Profile Investigator.json" src="https://github.com/user-attachments/assets/e6e8501c-8070-404f-931b-1adb548af1f9" />
+<img width="1236" height="605" alt="FaceCheck.ID - API.json" src="https://github.com/user-attachments/assets/6deffa0c-382c-4e76-bc4e-71a7a9db7211" />
+<img width="1247" height="932" alt="Telegram and Stripe" src="https://github.com/user-attachments/assets/c5ceb230-a81e-4b17-8f90-e7e27e7ba5b1" />
+<img width="382" height="962" alt="report" src="https://github.com/user-attachments/assets/8b7bcb53-b9ba-4ae6-b5f7-c3f271c33090" />
+<img width="604" height="973" alt="facial recognition example" src="https://github.com/user-attachments/assets/60fd8f01-e73e-49e8-828a-9f4cf228dd29" />
 
 
 
